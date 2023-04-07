@@ -133,8 +133,8 @@ def rotate_starting_point() :
     gimbal_ctrl.recenter()
 
 
-def scenario_closed(route_mode) :
-# The function controls the movement and actions of a robot for a "closed" scenario
+def scenario_danger(route_mode) :
+# The function controls the movement and actions of a robot for a "danger" scenario
     chassis_ctrl.rotate_with_degree(rm_define.anticlockwise, 90) # rotate 90 degrees anticlockwise
     # Recenter the gimbal to its default position
     gimbal_ctrl.recenter()
@@ -212,16 +212,16 @@ def act_by_scenario(room_number, room_type) :
                 # Come up to the rooms door
                 route_section_one()
 
-        elif room_type == "closed" :
-        # Act according to the "closed" scenario
-            scenario_closed("forward")
+        elif room_type == "danger" :
+        # Act according to the "danger" scenario
+            scenario_danger("forward")
 
-    if room_number == 2 and room_type == "closed" :
+    if room_number == 2 and room_type == "danger" :
         # Come up to the rooms door
         route_section_two("forward")
 
-        # Act according to the "closed" scenario
-        scenario_closed("forward")
+        # Act according to the "danger" scenario
+        scenario_danger("forward")
 
     if room_number == 3 :
         # Come up to the rooms door
@@ -300,9 +300,9 @@ def act_by_scenario(room_number, room_type) :
                 route_section_two("forward")
                 route_section_three()
 
-        elif room_type == "closed" :
-        # Act according to the "closed" scenario
-            scenario_closed("forward")
+        elif room_type == "danger" :
+        # Act according to the "danger" scenario
+            scenario_danger("forward")
 
     if room_number == 4 :
         # Come up to the rooms door
@@ -343,9 +343,9 @@ def act_by_scenario(room_number, room_type) :
             # Recenter the gimbal to its default position
             gimbal_ctrl.recenter()
 
-        elif room_type == "closed" :
-        # Act according to the "closed" scenario
-            scenario_closed("backward")
+        elif room_type == "danger" :
+        # Act according to the "danger" scenario
+            scenario_danger("backward")
 
         # Sleeping point to adjust the angle of movement
         time.sleep(5)
@@ -373,10 +373,10 @@ def start() :
     # Room One
     # act_by_scenario(1, "people")
     # act_by_scenario(1, "marker")
-    # act_by_scenario(1, "closed")
+    # act_by_scenario(1, "danger")
 
     # Room Two
-    # act_by_scenario(2, "closed")
+    # act_by_scenario(2, "danger")
 
     # Room Three
     # act_by_scenario(3, "people")
