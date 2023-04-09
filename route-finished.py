@@ -47,7 +47,9 @@ def vision_recognized_marker_letter_F(msg) :
     print("Vision control has been disabled")
 
     # Fire the robot's blaster gun
+    led_ctrl.gun_led_on()
     gun_ctrl.fire_once()
+    led_ctrl.gun_led_off()
 
 
 def scan_the_room() :
@@ -362,6 +364,9 @@ def start() :
     global flag
     # Set robot mode to free mode
     robot_ctrl.set_mode(rm_define.robot_mode_free)
+
+    # Set number of shots per time
+    gun_ctrl.set_fire_count(3)
 
     # Set chassis and gimbal movement speeds
     gimbal_ctrl.set_rotate_speed(60)
