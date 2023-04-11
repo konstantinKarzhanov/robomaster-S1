@@ -288,7 +288,7 @@ def act_by_scenario(room_number, room_type) :
                 # Sleeping point to adjust the angle of movement
                 time.sleep(5)
 
-            elif room_type == "people":
+            elif room_type == "people" :
                 # Set LEDs to Flashing Red - Danger
                 led_flash(255, 0, 0)
 
