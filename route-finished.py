@@ -1,6 +1,16 @@
 # import the time module to sleep for some time later on our "sleeping points"
 import time
 
+
+def led_flash(r,g,b):
+    led_ctrl.set_bottom_led(rm_define.armor_bottom_all, r, g, b,rm_define.effect_flash)
+    led_ctrl.set_top_led(rm_define.armor_top_all, r, g, b,rm_define.effect_flash)
+
+
+def led_solid(r,g,b):
+    led_ctrl.set_bottom_led(rm_define.armor_bottom_all, r, g, b,rm_define.effect_always_on)
+    led_ctrl.set_top_led(rm_define.armor_top_all, r, g, b,rm_define.effect_always_on)
+
 # The "flag" will be used later in the "scan_the_room" function to stop the endless loop when looking for a people or an "F" sign in a room.
 flag = None
 
@@ -71,72 +81,134 @@ def scan_the_room() :
     gimbal_ctrl.recenter()
 
 
-def route_section_one() :
+def route_section_one(route_type) :
 # The function moves the robot along the first section
-    chassis_ctrl.move_with_distance(0, 5) # move forward 5 meters
-    chassis_ctrl.move_with_distance(0, 2.3) # move forward 2.3 meters
+
+    if route_type == "forward":
+        # Set LEDs Flashing Purple - Indicating Movement
+        led_flash(138, 43, 226)
+    elif route_type == "backward":
+        # Set LEDs Flashing Green - Indicating Movement to Safety
+        led_flash(0, 255, 0)
+
+    # Robot Movement
+    chassis_ctrl.move_with_distance(0, 5) # Move  robot forward 5 meters
+    chassis_ctrl.move_with_distance(0, 2.3) # Move robot forward 2.3 meters
 
 
-def route_section_two(route_mode) :
+
+def route_section_two(route_type) :
 # The function moves the robot along the second section
-    if route_mode == "forward" :
-        chassis_ctrl.move_with_distance(0, 5) # move forward 5 meters
-        chassis_ctrl.move_with_distance(0, 2.6) # move forward 2.6 meters
-        chassis_ctrl.rotate_with_degree(rm_define.anticlockwise, 45) # rotate 45 degrees anticlockwise
+    if route_type == "forward" :
+        # Set LEDs to Flash Purple - Indicate Movement
+        led_flash(139, 0, 139)
+
+        # Robot Movement
+        chassis_ctrl.move_with_distance(0, 5) # Move robot forward 5 meters
+        chassis_ctrl.move_with_distance(0, 2.6) # Move robot forward 2.6 meters
+        chassis_ctrl.rotate_with_degree(rm_define.anticlockwise, 45) # Rotate robot 45 degrees anticlockwise
+
         # Recenter the gimbal to its default position
         gimbal_ctrl.recenter()
 
+        # Robot Movement
+        chassis_ctrl.move_with_distance(0, 2.7) # Move forward 2.7 meters
+        chassis_ctrl.rotate_with_degree(rm_define.anticlockwise, 45) # Rotate 45 degrees anticlockwise
+
+        # Recenter the gimbal to its default position
+        gimbal_ctrl.recenter()
+
+        # Set LED to Dark Blue - Sleep
+        led_solid(0, 0, 139)
+        # Sleeping point to adjust the angle of movement
+        time.sleep(5)
+
+        # Set LEDs to Flash Purple - Indicate Movement
+        led_flash(139, 0, 139)
+        chassis_ctrl.move_with_distance(0, 2.5) # Move robot forward 2.5 meters
+        chassis_ctrl.move_with_distance(0, 2.6) # Move robot forward 2.6 meters
+
+
+    elif route_type == "backward" :
+        # Set LEDs to Flash Green - Return Person to Safety
+        led_flash(0, 255, 0)
+
+        # Robot Movement
+        chassis_ctrl.move_with_distance(0, 2.5) # move forward 2.5 meters
+        chassis_ctrl.move_with_distance(0, 2.6) # move forward 2.6 meters
+        chassis_ctrl.rotate_with_degree(rm_define.clockwise, 45) # rotate 45 degrees anticlockwise
+
+        # Recenter the gimbal to its default position
+        gimbal_ctrl.recenter()
+
+        # Robot Movement
         chassis_ctrl.move_with_distance(0, 2.7) # move forward 2.7 meters
-        chassis_ctrl.rotate_with_degree(rm_define.anticlockwise, 45) # rotate 45 degrees anticlockwise
+        chassis_ctrl.rotate_with_degree(rm_define.clockwise, 45) # rotate 45 degrees anticlockwise
+
         # Recenter the gimbal to its default position
         gimbal_ctrl.recenter()
 
         # Sleeping point to adjust the angle of movement
+        # Set LED to Dark Blue - Sleep
+        led_solid(0, 0, 139)
         time.sleep(5)
 
-        chassis_ctrl.move_with_distance(0, 2.5) # move forward 2.5 meters
-        chassis_ctrl.move_with_distance(0, 2.6) # move forward 2.6 meters
+        # Set LEDs to Flash Green - Return Person to Safety
+        led_flash(0, 255, 0)
 
-    elif route_mode == "backward" :
-        chassis_ctrl.move_with_distance(0, 2.5) # move forward 2.5 meters
-        chassis_ctrl.move_with_distance(0, 2.6) # move forward 2.6 meters
-        chassis_ctrl.rotate_with_degree(rm_define.clockwise, 45) # rotate 45 degrees anticlockwise
-        # Recenter the gimbal to its default position
-        gimbal_ctrl.recenter()
-
-        chassis_ctrl.move_with_distance(0, 2.7) # move forward 2.7 meters
-        chassis_ctrl.rotate_with_degree(rm_define.clockwise, 45) # rotate 45 degrees anticlockwise
-        # Recenter the gimbal to its default position
-        gimbal_ctrl.recenter()
-
-        # Sleeping point to adjust the angle of movement
-        time.sleep(5)
-
+        # Robot Movement 
         chassis_ctrl.move_with_distance(0, 5) # move forward 5 meters
-        chassis_ctrl.move_with_distance(0, 2.6) # move forward 2.6 meters
+        chassis_ctrl.move_with_distance(0, 2.6) # move forward 2.6 meterS
+        
 
-
-def route_section_three() :
+def route_section_three(route_type) :
 # The function moves the robot along the third section
+
+    if route_type == "forward":
+         # Set LEDs to Flashing Purple - Indicating Movement
+         led_flash(139, 0, 139)
+    elif route_type == "backward":
+        # Set LEDs to Flash Green - Move Person to Safety
+        led_flash(0, 255, 0)
+
+    # Robot Movement
     chassis_ctrl.move_with_distance(0, 5) # move forward 5 meters
     chassis_ctrl.move_with_distance(0, 4) # move forward 4 meters
 
 
-def route_section_four() :
+def route_section_four(route_type) :
 # The function moves the robot along the fourth section
+
+    if route_type == "forward":
+        # Set LEDs to Flash Purple - Indicate Movement
+        led_flash(139, 0, 139)
+    elif route_type == "backward":
+        # Set LEDs to Flash Green - Move Person to Safety
+        led_flash(0, 255, 0)
+
+    # Robot Movement
     chassis_ctrl.move_with_distance(0, 5) # move forward 5 meters
     chassis_ctrl.move_with_distance(0, 5) # move forward 5 meters
     chassis_ctrl.move_with_distance(0, 0.3) # move forward 0.3 meters
 
 
 def rotate_starting_point() :
+    # Set LEDs to Flash Purple - Indicate Movement
+    led_flash(139, 0, 139)
+
+    # Robot Movement
     chassis_ctrl.rotate_with_degree(rm_define.anticlockwise, 180) # rotate 180 degrees anticlockwise
+
     # Recenter the gimbal to its default position
     gimbal_ctrl.recenter()
 
 
 def scenario_danger(route_mode) :
 # The function controls the movement and actions of a robot for a "danger" scenario
+    
+    # Set LEDs to Flash Red - Indicate Danger
+    led_flash(255, 0, 0)
+
     chassis_ctrl.rotate_with_degree(rm_define.anticlockwise, 90) # rotate 90 degrees anticlockwise
     # Recenter the gimbal to its default position
     gimbal_ctrl.recenter()
@@ -151,10 +223,21 @@ def scenario_danger(route_mode) :
 
     if route_mode == "forward" :
         # Leave the room based on scenario
+
+        # Set LEDs to Flash Purple - Indicate Movement
+        led_flash(139, 0, 139)
+
+        # Robot Movement
         chassis_ctrl.rotate_with_degree(rm_define.clockwise, 90) # rotate 90 degrees clockwise
+
 
     elif route_mode == "backward" :
         # Leave the room based on scenario
+
+        # Set LEDs to Flash Green - Move Person to Safety
+        led_flash(0, 255, 0)
+
+        # Robot Movement
         chassis_ctrl.rotate_with_degree(rm_define.anticlockwise, 90) # rotate 90 degrees clockwise
 
     # Recenter the gimbal to its default position
@@ -165,9 +248,12 @@ def act_by_scenario(room_number, room_type) :
 # The function controls the movement and actions of a robot in different scenarios depending on the "room_number" and "room_type" parameters
     if room_number == 1 :
         # Come up to the rooms door
-        route_section_one()
+        route_section_one("forward")
 
         if room_type == "marker" or room_type == "people" :
+        # Set LEDs to Flashing Red - Danger
+            led_flash(255, 0, 0)
+
         # Come up to the marker or the people inside the room
             chassis_ctrl.rotate_with_degree(rm_define.anticlockwise, 90) # rotate 90 degrees anticlockwise
             # Recenter the gimbal to its default position
@@ -189,30 +275,40 @@ def act_by_scenario(room_number, room_type) :
             chassis_ctrl.move_with_distance(0, 4.7) # move forward 4.7 meters
             
             if room_type == "marker" :
+            # Set LEDs to Flashing Red - Danger
+                led_flash(255, 0, 0)
+
+                # Robot Movement
                 chassis_ctrl.rotate_with_degree(rm_define.anticlockwise, 90) # rotate 90 degrees anticlockwise
                 # Recenter the gimbal to its default position
                 gimbal_ctrl.recenter()
                 
+                # Set LED to Dark Blue - Sleep
+                led_solid(0, 0, 139)
                 # Sleeping point to adjust the angle of movement
                 time.sleep(5)
 
             elif room_type == "people" :
+                # Set LEDs to Flashing Red - Danger
+                led_flash(255, 0, 0)
+
+                # Robot Movement
                 chassis_ctrl.rotate_with_degree(rm_define.clockwise, 90) # rotate 90 degrees clockwise
+
                 # Recenter the gimbal to its default position
                 gimbal_ctrl.recenter()
-
-                # Sleeping point to adjust the angle of movement
-                time.sleep(5)
                 
                 # Return to the starting point
-                route_section_one()
+                route_section_one("backward")
                 rotate_starting_point()
 
+                # Set LED to Dark Blue - Sleep
+                led_solid(0, 0, 139)
                 # Sleeping point to adjust the angle of movement
                 time.sleep(5)
 
                 # Come up to the rooms door
-                route_section_one()
+                route_section_one("forward")
 
         elif room_type == "danger" :
         # Act according to the "danger" scenario
@@ -227,9 +323,12 @@ def act_by_scenario(room_number, room_type) :
 
     if room_number == 3 :
         # Come up to the rooms door
-        route_section_three()
+        route_section_three("forward")
 
         if room_type == "marker" or room_type == "people" :
+            # Set LEDs to Flashing Red - Danger
+            led_flash(255, 0, 0)
+
             # Come up to the marker or the people inside the room
             chassis_ctrl.rotate_with_degree(rm_define.anticlockwise, 90) # rotate 90 degrees anticlockwise
             # Recenter the gimbal to its default position
@@ -257,6 +356,11 @@ def act_by_scenario(room_number, room_type) :
             scan_the_room() # scan the environment
 
             # Leave the room based on scenario
+            
+            # Set LEDs Flashing Green - Safe
+            led_flash(0, 255, 0)
+
+            # Robot Movement
             chassis_ctrl.rotate_with_degree(rm_define.clockwise, 180) # rotate 180 degrees clockwise
             # Recenter the gimbal to its default position
             gimbal_ctrl.recenter()
@@ -278,12 +382,21 @@ def act_by_scenario(room_number, room_type) :
 
             chassis_ctrl.move_with_distance(0, 1.96) # move forward 1.96 meters
 
+
             if room_type == "marker" :
+                # Set LEDs to Flashing Purple
+                led_flash(138, 43, 226)
+
+                # Robot Movement
                 chassis_ctrl.rotate_with_degree(rm_define.anticlockwise, 90) # rotate 90 degrees anticlockwise
                 # Recenter the gimbal to its default position
                 gimbal_ctrl.recenter()
 
             elif room_type == "people" :
+                # Set LEDs to Flashing Green to Safety
+                led_flash(0, 100, 0)
+
+                # Robot Movement
                 chassis_ctrl.rotate_with_degree(rm_define.clockwise, 90) # rotate 90 degrees anticlockwise
                 # Recenter the gimbal to its default position
                 gimbal_ctrl.recenter()
@@ -294,6 +407,8 @@ def act_by_scenario(room_number, room_type) :
                 route_section_one()
                 rotate_starting_point()
 
+                # Set LED to Dark Blue - Sleep
+                led_solid(0, 0, 139)
                 # Sleeping point to adjust the angle of movement
                 time.sleep(5)
 
@@ -353,10 +468,10 @@ def act_by_scenario(room_number, room_type) :
         time.sleep(5)
 
         # Return to the starting point
-        route_section_four()
-        route_section_three()
+        route_section_four("backward")
+        route_section_three("backward")
         route_section_two("backward")
-        route_section_one()
+        route_section_one("backward")
         rotate_starting_point()
 
 
@@ -387,5 +502,4 @@ def start() :
     # act_by_scenario(3, "people")
 
     # Room Four
-    # act_by_scenario(4, "people")
-
+    # act_by_scenario(4, "people"
