@@ -3,16 +3,22 @@ import time
 
 
 def led_flash(r,g,b):
-    led_ctrl.set_bottom_led(rm_define.armor_bottom_all, r, g, b,rm_define.effect_flash)
-    led_ctrl.set_top_led(rm_define.armor_top_all, r, g, b,rm_define.effect_flash)
+# The function sets the bottom and top LEDs of the robot to the specified color and flashes them
+# r, g, b: integer values between 0 and 255 representing the amount of red, green and blue colors respectively
+    led_ctrl.set_bottom_led(rm_define.armor_bottom_all, r, g, b, rm_define.effect_flash)
+    led_ctrl.set_top_led(rm_define.armor_top_all, r, g, b, rm_define.effect_flash)
 
 
 def led_solid(r,g,b):
-    led_ctrl.set_bottom_led(rm_define.armor_bottom_all, r, g, b,rm_define.effect_always_on)
-    led_ctrl.set_top_led(rm_define.armor_top_all, r, g, b,rm_define.effect_always_on)
+# The function sets the bottom and top LEDs of the robot to the specified solid color
+# r, g, b: integer values between 0 and 255 representing the amount of red, green and blue colors respectively
+    led_ctrl.set_bottom_led(rm_define.armor_bottom_all, r, g, b, rm_define.effect_always_on)
+    led_ctrl.set_top_led(rm_define.armor_top_all, r, g, b, rm_define.effect_always_on)
+
 
 # The "flag" will be used later in the "scan_the_room" function to stop the endless loop when looking for a people or an "F" sign in a room.
 flag = None
+
 
 def enable_detection(detection_type) :
 # The function enables detection of markers using the vision system
@@ -81,6 +87,12 @@ def scan_the_room() :
     gimbal_ctrl.recenter()
 
 
+def scenario_sleep(time_in_seconds, r = 0, g = 0, b = 139) :
+    # Set LED to Dark Blue (by default) - Sleep
+    led_solid(r, g, b)
+    time.sleep(time_in_seconds)
+
+
 def route_section_one(route_type) :
 # The function moves the robot along the first section
 
@@ -94,7 +106,6 @@ def route_section_one(route_type) :
     # Robot Movement
     chassis_ctrl.move_with_distance(0, 5) # Move  robot forward 5 meters
     chassis_ctrl.move_with_distance(0, 2.3) # Move robot forward 2.3 meters
-
 
 
 def route_section_two(route_type) :
@@ -118,10 +129,8 @@ def route_section_two(route_type) :
         # Recenter the gimbal to its default position
         gimbal_ctrl.recenter()
 
-        # Set LED to Dark Blue - Sleep
-        led_solid(0, 0, 139)
         # Sleeping point to adjust the angle of movement
-        time.sleep(5)
+        scenario_sleep(5)
 
         # Set LEDs to Flash Purple - Indicate Movement
         led_flash(139, 0, 139)
@@ -149,9 +158,7 @@ def route_section_two(route_type) :
         gimbal_ctrl.recenter()
 
         # Sleeping point to adjust the angle of movement
-        # Set LED to Dark Blue - Sleep
-        led_solid(0, 0, 139)
-        time.sleep(5)
+        scenario_sleep(5)
 
         # Set LEDs to Flash Green - Return Person to Safety
         led_flash(0, 255, 0)
@@ -203,7 +210,7 @@ def rotate_starting_point() :
     gimbal_ctrl.recenter()
 
 
-def scenario_danger(route_mode) :
+def scenario_danger(route_type) :
 # The function controls the movement and actions of a robot for a "danger" scenario
     
     # Set LEDs to Flash Red - Indicate Danger
@@ -221,7 +228,7 @@ def scenario_danger(route_mode) :
     # Recenter the gimbal to its default position
     gimbal_ctrl.recenter()
 
-    if route_mode == "forward" :
+    if route_type == "forward" :
         # Leave the room based on scenario
 
         # Set LEDs to Flash Purple - Indicate Movement
@@ -231,7 +238,7 @@ def scenario_danger(route_mode) :
         chassis_ctrl.rotate_with_degree(rm_define.clockwise, 90) # rotate 90 degrees clockwise
 
 
-    elif route_mode == "backward" :
+    elif route_type == "backward" :
         # Leave the room based on scenario
 
         # Set LEDs to Flash Green - Move Person to Safety
@@ -297,10 +304,8 @@ def act_by_scenario(room_number, room_type) :
                 route_section_one("backward")
                 rotate_starting_point()
 
-                # Set LED to Dark Blue - Sleep
-                led_solid(0, 0, 139)
                 # Sleeping point to adjust the angle of movement
-                time.sleep(5)
+                scenario_sleep(5)
 
                 # Come up to the rooms door
                 route_section_one("forward")
@@ -399,10 +404,8 @@ def act_by_scenario(room_number, room_type) :
                 route_section_one("backward")
                 rotate_starting_point()
 
-                # Set LED to Dark Blue - Sleep
-                led_solid(0, 0, 255)
                 # Sleeping point to adjust the angle of movement
-                time.sleep(5)
+                scenario_sleep(5)
 
                 # Come up to the rooms door
                 route_section_one("forward")
@@ -415,7 +418,7 @@ def act_by_scenario(room_number, room_type) :
 
     if room_number == 4 :
         # Come up to the rooms door
-        route_section_four()
+        route_section_four("forward")
 
         if room_type == "marker" or room_type == "people" :
             # Set LEDs Flashing Red - Indicate Danger
@@ -459,7 +462,7 @@ def act_by_scenario(room_number, room_type) :
             scenario_danger("backward")
 
         # Sleeping point to adjust the angle of movement
-        time.sleep(5)
+        scenario_sleep(5)
 
         # Return to the starting point
         route_section_four("backward")
