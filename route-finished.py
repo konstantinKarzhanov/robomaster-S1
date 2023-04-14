@@ -23,7 +23,7 @@ def set_defaults() :
 
     # Set chassis and gimbal movement speeds
     gimbal_ctrl.set_rotate_speed(60)
-    chassis_ctrl.set_trans_speed(.6)
+    chassis_ctrl.set_trans_speed(.8)
     chassis_ctrl.set_rotate_speed(60)
 
 
@@ -348,7 +348,7 @@ def scenario_danger(route_type) :
     gimbal_ctrl.recenter()
 
 
-def scenario_disco(dance_num = 2, dance_dist = .2, low_degree = 0, high_degree = 360, low_color = 0, high_color = 255, pitch_low = -20, pitch_high = 35, yaw_low = 0, yaw_high = 250, speed_low = 300, speed_high = 540, f_freq_low = 2, f_freq_high = 10) :
+def scenario_disco(dance_num = 2, dance_dist = .2, low_degree = 100, high_degree = 360, low_color = 0, high_color = 255, pitch_low = -20, pitch_high = 35, yaw_low = 100, yaw_high = 250, speed_low = 300, speed_high = 540, f_freq_low = 2, f_freq_high = 10) :
 # This function generates random movements and colors for the robot to perform a disco dance
 # It takes in several parameters that determine the range of values for various aspects of the dance
 
@@ -621,8 +621,8 @@ def start() :
     play_la_cucaracha()
     act_by_scenario(1, "people")
     act_by_scenario(2, "danger")
-    scenario_disco(10)
+    scenario_disco(6)
     act_by_scenario(3, "marker")
     act_by_scenario(4, "marker")
     play_champions()
-    scenario_disco(10)
+    scenario_disco(6)
