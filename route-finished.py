@@ -604,7 +604,6 @@ def act_by_scenario(room_number, room_type) :
         # Return to the starting point
         route_section_four("backward")
         route_section_three("backward")
-        scenario_disco(10)
         route_section_two("backward")
         route_section_one("backward")
         rotate_starting_point()
@@ -623,3 +622,4 @@ def start() :
     act_by_scenario(3, "marker")
     act_by_scenario(4, "marker")
     play_champions()
+    scenario_disco(10)
