@@ -120,7 +120,7 @@ def vision_recognized_marker_letter_F(msg) :
     flag = True
 
     # Change LEDs to Solid Red - Shooting Target
-    led_flash(255, 0, 0)
+    led_solid(255, 0, 0)
 
     # Detect and aim at the letter 'F' marker using the robot's vision system
     vision_ctrl.detect_marker_and_aim(rm_define.marker_letter_F)
