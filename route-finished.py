@@ -172,8 +172,8 @@ def route_section_three(route_type) :
 # The function moves the robot along the third section
 
     if route_type == "forward":
-         # Set LEDs to Flashing Purple - Indicating Movement
-         led_flash(139, 0, 139)
+        # Set LEDs to Flashing Purple - Indicating Movement
+        led_flash(139, 0, 139)
     elif route_type == "backward":
         # Set LEDs to Flash Green - Move Person to Safety
         led_flash(0, 255, 0)
@@ -500,3 +500,9 @@ def start() :
 
     # Room Four
     # act_by_scenario(4, "people"
+
+    # Sprint Scenario
+    act_by_scenario(1, "people")
+    act_by_scenario(2, "danger")
+    act_by_scenario(3, "marker")
+    act_by_scenario(4, "marker")
