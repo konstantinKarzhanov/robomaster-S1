@@ -558,6 +558,3 @@ def start() :
     # act_by_scenario(3, "marker")
     # act_by_scenario(4, "marker")
     scenario_disco(10)
-    
-
-
