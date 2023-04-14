@@ -3,9 +3,25 @@ import time
 import random
 
 
+# The "flag" will be used later in the "scan_the_room" function to stop the endless loop when looking for a people or an "F" sign in a room.
+flag = None
+
+
 def random_int(low_value, high_value) :
     return random.randint(low_value, high_value)
-    
+
+
+def set_defaults() :
+    # Set robot mode to free mode
+    robot_ctrl.set_mode(rm_define.robot_mode_free)
+
+    # Set number of shots per time
+    gun_ctrl.set_fire_count(3)
+
+    # Set chassis and gimbal movement speeds
+    gimbal_ctrl.set_rotate_speed(60)
+    chassis_ctrl.set_trans_speed(.6)
+    chassis_ctrl.set_rotate_speed(60)
 
 
 def play_la_cucaracha():
@@ -41,12 +57,13 @@ def play_la_cucaracha():
 
 def play_sleep_song():
     for i in range(2):
-        media_ctrl.play_sound(rm_define.media_sound_solmization_3A)
+        media_ctrl.play_sound(rm_define.media_sound_solmization_2A)
         time.sleep(.4)
-        media_ctrl.play_sound(rm_define.media_sound_solmization_3A)
+        media_ctrl.play_sound(rm_define.media_sound_solmization_2A)
         time.sleep(0.4)
         media_ctrl.play_sound(rm_define.media_sound_solmization_3C)
         time.sleep(0.4)
+
 
 def play_champions():
     media_ctrl.play_sound(rm_define.media_sound_solmization_3F)
@@ -78,10 +95,6 @@ def led_solid(r,g,b):
 # r, g, b: integer values between 0 and 255 representing the amount of red, green and blue colors respectively
     led_ctrl.set_bottom_led(rm_define.armor_bottom_all, r, g, b, rm_define.effect_always_on)
     led_ctrl.set_top_led(rm_define.armor_top_all, r, g, b, rm_define.effect_always_on)
-
-
-# The "flag" will be used later in the "scan_the_room" function to stop the endless loop when looking for a people or an "F" sign in a room.
-flag = None
 
 
 def enable_detection(detection_type) :
@@ -332,7 +345,7 @@ def scenario_danger(route_type) :
     gimbal_ctrl.recenter()
 
 
-def scenario_disco(dance_num = 2, dance_dist = .2, low_degree = 0, high_degree = 360, low_color = 0, high_color = 255, pitch_low = -20, pitch_high = 35, yaw_low = 0, yaw_high = 250, speed_low = 300, speed_high = 540, f_freq_low = 2, f_freq_high = 10, error_low = 1, error_high = 30) :
+def scenario_disco(dance_num = 2, dance_dist = .2, low_degree = 0, high_degree = 360, low_color = 0, high_color = 255, pitch_low = -20, pitch_high = 35, yaw_low = 0, yaw_high = 250, speed_low = 300, speed_high = 540, f_freq_low = 2, f_freq_high = 10) :
 # This function generates random movements and colors for the robot to perform a disco dance
 # It takes in several parameters that determine the range of values for various aspects of the dance
 
@@ -365,14 +378,8 @@ def scenario_disco(dance_num = 2, dance_dist = .2, low_degree = 0, high_degree =
         # Yaw in a random direction
         gimbal_ctrl.yaw_ctrl(random_int(yaw_low, yaw_high))
 
-        # Print a string of "ERROR!!!" with random repetition to create noise
-        print(" ERROR!!! " * random_int(error_low, error_high))
-
-        # Pause briefly before the next iteration of the loop
-        # time.sleep(.2)
-
-    # Recenter the gimbal to its default position
-    gimbal_ctrl.recenter()
+    set_defaults()
+    scenario_sleep(5)
 
 
 def act_by_scenario(room_number, room_type) :
@@ -571,6 +578,8 @@ def act_by_scenario(room_number, room_type) :
             scan_the_room() # scan the environment
 
             # Leave the room based on scenario
+            # Set LEDs to Flashing Green
+            led_flash(0, 255, 0)
             chassis_ctrl.rotate_with_degree(rm_define.clockwise, 90) # rotate 90 degrees clockwise
             # Recenter the gimbal to its default position
             gimbal_ctrl.recenter()
@@ -595,6 +604,7 @@ def act_by_scenario(room_number, room_type) :
         # Return to the starting point
         route_section_four("backward")
         route_section_three("backward")
+        scenario_disco(10)
         route_section_two("backward")
         route_section_one("backward")
         rotate_starting_point()
@@ -602,40 +612,14 @@ def act_by_scenario(room_number, room_type) :
 
 def start() :
     global flag
-    # Set robot mode to free mode
-    robot_ctrl.set_mode(rm_define.robot_mode_free)
 
-    # Set number of shots per time
-    gun_ctrl.set_fire_count(3)
+    set_defaults()
 
-    # Set chassis and gimbal movement speeds
-    gimbal_ctrl.set_rotate_speed(60)
-    chassis_ctrl.set_trans_speed(.6)
-    chassis_ctrl.set_rotate_speed(60)
-
-    # The program was tested with these scenarios
-    
-    # Room One
-    # act_by_scenario(1, "people")
-    # act_by_scenario(1, "marker")
-    # act_by_scenario(1, "danger")
-
-    # Room Two
-    # act_by_scenario(2, "danger")
-
-    # Room Three
-    # act_by_scenario(3, "people")
-
-    # Room Four
-    # act_by_scenario(4, "people"
-
-    # ----------------------------
-    # Sprint Scenario starts here
-    # ----------------------------
-
-    # act_by_scenario(1, "people")
-    # act_by_scenario(2, "danger")
-    # act_by_scenario(3, "marker")
-    # act_by_scenario(4, "marker")
+    # Sprint Scenario
+    play_la_cucaracha()
+    act_by_scenario(1, "people")
+    act_by_scenario(2, "danger")
     scenario_disco(10)
+    act_by_scenario(3, "marker")
+    act_by_scenario(4, "marker")
     play_champions()
