@@ -7,6 +7,65 @@ def random_int(low_value, high_value) :
     return random.randint(low_value, high_value)
     
 
+
+def play_la_cucaracha():
+        media_ctrl.play_sound(rm_define.media_sound_solmization_2G)
+        media_ctrl.play_sound(rm_define.media_sound_solmization_2G)
+        media_ctrl.play_sound(rm_define.media_sound_solmization_2G)
+        time.sleep(0.25)
+        media_ctrl.play_sound(rm_define.media_sound_solmization_3C)
+        time.sleep(0.25)
+        media_ctrl.play_sound(rm_define.media_sound_solmization_3E)
+        time.sleep(0.25)
+        media_ctrl.play_sound(rm_define.media_sound_solmization_2G)
+        media_ctrl.play_sound(rm_define.media_sound_solmization_2G)
+        media_ctrl.play_sound(rm_define.media_sound_solmization_2G)
+        time.sleep(0.25)
+        media_ctrl.play_sound(rm_define.media_sound_solmization_3C)
+        time.sleep(0.25)
+        media_ctrl.play_sound(rm_define.media_sound_solmization_3E)
+        time.sleep(0.5)
+        media_ctrl.play_sound(rm_define.media_sound_solmization_3C)
+        media_ctrl.play_sound(rm_define.media_sound_solmization_3C)
+        time.sleep(0.25)
+        media_ctrl.play_sound(rm_define.media_sound_solmization_2B)
+        media_ctrl.play_sound(rm_define.media_sound_solmization_2B)
+        time.sleep(0.25)
+        media_ctrl.play_sound(rm_define.media_sound_solmization_2A)
+        media_ctrl.play_sound(rm_define.media_sound_solmization_2A)
+        time.sleep(0.25)
+        media_ctrl.play_sound(rm_define.media_sound_solmization_2G)
+        time.sleep(.25)
+        media_ctrl.play_sound(rm_define.media_sound_solmization_2G)
+        
+
+def play_sleep_song():
+    for i in range(2):
+        media_ctrl.play_sound(rm_define.media_sound_solmization_3A)
+        time.sleep(.4)
+        media_ctrl.play_sound(rm_define.media_sound_solmization_3A)
+        time.sleep(0.4)
+        media_ctrl.play_sound(rm_define.media_sound_solmization_3C)
+        time.sleep(0.4)
+
+def play_champions():
+    media_ctrl.play_sound(rm_define.media_sound_solmization_3F)
+    time.sleep(0.5)
+    media_ctrl.play_sound(rm_define.media_sound_solmization_3E)
+    time.sleep(0.5)
+    media_ctrl.play_sound(rm_define.media_sound_solmization_3F)
+    time.sleep(0.5)
+    media_ctrl.play_sound(rm_define.media_sound_solmization_3E)
+    time.sleep(0.5)
+    media_ctrl.play_sound(rm_define.media_sound_solmization_3C)
+    time.sleep(0.5)
+    media_ctrl.play_sound(rm_define.media_sound_solmization_2A)
+    time.sleep(0.5)
+    media_ctrl.play_sound(rm_define.media_sound_solmization_3D)
+    time.sleep(0.5)
+    media_ctrl.play_sound(rm_define.media_sound_solmization_2A)
+     
+
 def led_flash(r,g,b):
 # The function sets the bottom and top LEDs of the robot to the specified color and flashes them
 # r, g, b: integer values between 0 and 255 representing the amount of red, green and blue colors respectively
@@ -43,6 +102,9 @@ def vision_recognized_people(msg):
     global flag
     flag = True
 
+    # Change LEDs to Solid Green - Person Found
+    led_flash(0, 255, 0)
+
     # Disable people detection to avoid interference with other operations
     vision_ctrl.disable_detection(rm_define.vision_detection_people)
     # Print a message indicating that vision control has been disabled
@@ -56,6 +118,9 @@ def vision_recognized_marker_letter_F(msg) :
 # The function that is automatically called by the "enable_detection" function when marker (in this case, the letter "F") are detected in the room
     global flag
     flag = True
+
+    # Change LEDs to Solid Red - Shooting Target
+    led_solid(255, 0, 0)
 
     # Detect and aim at the letter 'F' marker using the robot's vision system
     vision_ctrl.detect_marker_and_aim(rm_define.marker_letter_F)
@@ -78,6 +143,9 @@ def scan_the_room() :
     global flag
     flag = False
 
+    # Set LEDs to Flashing Yellow - Scanning
+    led_solid(255, 255,0)
+
     # Set the pitch angle of the gimbal to 20 degrees
     gimbal_ctrl.pitch_ctrl(20)
 
@@ -95,12 +163,17 @@ def scan_the_room() :
 def scenario_sleep(time_in_seconds, r = 0, g = 0, b = 139) :
     # Set LED to Dark Blue (by default) - Sleep
     led_solid(r, g, b)
+    play_sleep_song()
+    # Lower the Gimbal to indicate Sleeping
+    gimbal_ctrl.pitch_ctrl(-20)
     time.sleep(time_in_seconds)
+    # Set LEDs to return to Flashing Purple - Indicating Movement
+    led_flash(139, 0, 139)
+    gimbal_ctrl.recenter()
 
 
 def route_section_one(route_type) :
 # The function moves the robot along the first section
-
     if route_type == "forward":
         # Set LEDs Flashing Purple - Indicating Movement
         led_flash(138, 43, 226)
@@ -205,8 +278,8 @@ def route_section_four(route_type) :
 
 
 def rotate_starting_point() :
-    # Set LEDs to Flash Purple - Indicate Movement
-    led_flash(139, 0, 139)
+    # Set LEDs to Solid Light Orange - Indicate Turn
+    led_flash(255, 99, 171)
 
     # Robot Movement
     chassis_ctrl.rotate_with_degree(rm_define.anticlockwise, 180) # rotate 180 degrees anticlockwise
@@ -218,12 +291,15 @@ def rotate_starting_point() :
 def scenario_danger(route_type) :
 # The function controls the movement and actions of a robot for a "danger" scenario
     
-    # Set LEDs to Flash Red - Indicate Danger
-    led_flash(255, 0, 0)
+    # Set LEDs to Flash Orange - Indicate Danger, Unknown Severity
+    led_flash(255, 69, 0)
 
     chassis_ctrl.rotate_with_degree(rm_define.anticlockwise, 90) # rotate 90 degrees anticlockwise
     # Recenter the gimbal to its default position
     gimbal_ctrl.recenter()
+
+    # Set LEDs to Flash Red - Indicating Danger
+    led_flash(255, 0, 0)
 
     # Simulate shaking head (left to right)
     for i in range(2) :
@@ -306,8 +382,8 @@ def act_by_scenario(room_number, room_type) :
         route_section_one("forward")
 
         if room_type == "marker" or room_type == "people" :
-        # Set LEDs to Flashing Red - Danger
-            led_flash(255, 0, 0)
+        # Set LEDs to Flashing Orange - Scanning Danger, Unknown Severity
+            led_flash(255, 69, 0)
 
         # Come up to the marker or the people inside the room
             chassis_ctrl.rotate_with_degree(rm_define.anticlockwise, 90) # rotate 90 degrees anticlockwise
@@ -324,6 +400,8 @@ def act_by_scenario(room_number, room_type) :
             scan_the_room() # scan the environment
 
             # Leave the room based on scenario
+            # Set LEDs to Flashing Green - Zone now Clear
+            led_flash(0, 255, 0)
             chassis_ctrl.rotate_with_degree(rm_define.clockwise, 90) # rotate 90 degrees clockwise
             # Recenter the gimbal to its default position
             gimbal_ctrl.recenter()
@@ -374,8 +452,8 @@ def act_by_scenario(room_number, room_type) :
         route_section_three("forward")
 
         if room_type == "marker" or room_type == "people" :
-            # Set LEDs to Flashing Red - Danger
-            led_flash(255, 0, 0)
+            # Set LEDs to Flashing Orange - AssessingDanger
+            led_flash(255, 69, 0)
 
             # Come up to the marker or the people inside the room
             chassis_ctrl.rotate_with_degree(rm_define.anticlockwise, 90) # rotate 90 degrees anticlockwise
@@ -406,6 +484,8 @@ def act_by_scenario(room_number, room_type) :
             # Leave the room based on scenario
 
             # Robot Movement
+            # Set LEDs to Flashing Green - Room Clear
+            led_flash(0, 255, 0)
             chassis_ctrl.rotate_with_degree(rm_define.clockwise, 180) # rotate 180 degrees clockwise
             # Recenter the gimbal to its default position
             gimbal_ctrl.recenter()
@@ -469,8 +549,8 @@ def act_by_scenario(room_number, room_type) :
         route_section_four("forward")
 
         if room_type == "marker" or room_type == "people" :
-            # Set LEDs Flashing Red - Indicate Danger
-            led_flash(255, 0 ,0)
+            # Set LEDs Flashing Orange - Scanning for Danger
+            led_flash(255, 69 ,0)
             # Come up to the marker or the people inside the room
             chassis_ctrl.rotate_with_degree(rm_define.anticlockwise, 90) # rotate 90 degrees anticlockwise
             # Recenter the gimbal to its default position
@@ -558,3 +638,4 @@ def start() :
     # act_by_scenario(3, "marker")
     # act_by_scenario(4, "marker")
     scenario_disco(10)
+    play_champions()
