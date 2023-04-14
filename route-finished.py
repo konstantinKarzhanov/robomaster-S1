@@ -15,6 +15,9 @@ def set_defaults() :
     # Set robot mode to free mode
     robot_ctrl.set_mode(rm_define.robot_mode_free)
 
+    # Set flash frequency to default
+    led_ctrl.set_flash(rm_define.armor_all, 2)
+
     # Set number of shots per time
     gun_ctrl.set_fire_count(3)
 
