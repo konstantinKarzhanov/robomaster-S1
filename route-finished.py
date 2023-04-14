@@ -1,5 +1,10 @@
 # import the time module to sleep for some time later on our "sleeping points"
 import time
+import random
+
+
+def random_int(low_value, high_value) :
+    return random.randint(low_value, high_value)
 
 
 def led_flash(r,g,b):
