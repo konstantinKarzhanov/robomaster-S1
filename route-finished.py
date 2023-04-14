@@ -5,7 +5,7 @@ import random
 
 def random_int(low_value, high_value) :
     return random.randint(low_value, high_value)
-
+    
 
 def led_flash(r,g,b):
 # The function sets the bottom and top LEDs of the robot to the specified color and flashes them
@@ -251,6 +251,49 @@ def scenario_danger(route_type) :
 
         # Robot Movement
         chassis_ctrl.rotate_with_degree(rm_define.anticlockwise, 90) # rotate 90 degrees clockwise
+
+    # Recenter the gimbal to its default position
+    gimbal_ctrl.recenter()
+
+
+def scenario_disco(dance_num = 2, dance_dist = .2, low_degree = 0, high_degree = 360, low_color = 0, high_color = 255, pitch_low = -20, pitch_high = 35, yaw_low = 0, yaw_high = 250, speed_low = 300, speed_high = 540, f_freq_low = 2, f_freq_high = 10, error_low = 1, error_high = 30) :
+# This function generates random movements and colors for the robot to perform a disco dance
+# It takes in several parameters that determine the range of values for various aspects of the dance
+
+    # List of choices for the robot's chassis rotation direction
+    list_chassis_choices = [rm_define.clockwise, rm_define.anticlockwise]
+
+    # Loop to perform the dance moves number of times
+    for i in range(dance_num) :
+        # Set random speeds for the gimbal and chassis rotation
+        gimbal_ctrl.set_rotate_speed(random_int(speed_low, speed_high))
+        chassis_ctrl.set_rotate_speed(random_int(speed_low, speed_high))
+
+        # Flash the LEDs with a random frequency and color
+        led_ctrl.set_flash(rm_define.armor_all, random_int(f_freq_low, f_freq_high))
+        led_flash(random_int(low_color, high_color),random_int(low_color, high_color),random_int(low_color, high_color))
+        
+        # Alternate between moving the chassis left and right while the LEDs on
+        if i % 2 == 0 :
+            chassis_ctrl.move_with_distance(-90, dance_dist)
+        elif i % 2 != 0 :
+            chassis_ctrl.move_with_distance(90, dance_dist)
+
+
+        # Rotate the chassis in a random direction
+        chassis_ctrl.rotate_with_degree(random.choice(list_chassis_choices), random_int(low_degree, high_degree))
+        
+        # Pitch in a random direction
+        gimbal_ctrl.pitch_ctrl(random_int(pitch_low, pitch_high))
+
+        # Yaw in a random direction
+        gimbal_ctrl.yaw_ctrl(random_int(yaw_low, yaw_high))
+
+        # Print a string of "ERROR!!!" with random repetition to create noise
+        print(" ERROR!!! " * random_int(error_low, error_high))
+
+        # Pause briefly before the next iteration of the loop
+        # time.sleep(.2)
 
     # Recenter the gimbal to its default position
     gimbal_ctrl.recenter()
@@ -506,8 +549,15 @@ def start() :
     # Room Four
     # act_by_scenario(4, "people"
 
-    # Sprint Scenario
-    act_by_scenario(1, "people")
-    act_by_scenario(2, "danger")
-    act_by_scenario(3, "marker")
-    act_by_scenario(4, "marker")
+    # ----------------------------
+    # Sprint Scenario starts here
+    # ----------------------------
+
+    # act_by_scenario(1, "people")
+    # act_by_scenario(2, "danger")
+    # act_by_scenario(3, "marker")
+    # act_by_scenario(4, "marker")
+    scenario_disco(10)
+    
+
+
